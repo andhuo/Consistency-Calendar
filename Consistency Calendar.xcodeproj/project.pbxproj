@@ -6,8 +6,25 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A1A1C3D92F8D855D00EB377C /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D42F8D79E600EB377C /* TodayView.swift */; };
+		A1A1C3DA2F8D856900EB377C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D62F8D7A1800EB377C /* CalendarView.swift */; };
+		A1A1C3DB2F8D857000EB377C /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D72F8D7A2D00EB377C /* InsightsView.swift */; };
+		A1A1C3DC2F8D87AA00EB377C /* StatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D82F8D7A3E00EB377C /* StatCard.swift */; };
+		A1A1C3DD2F8D87CC00EB377C /* GoalCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D52F8D7A0300EB377C /* GoalCardView.swift */; };
+		A1A1C3DE2F8D87D200EB377C /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D22F8D799000EB377C /* Goal.swift */; };
+		A1A1C3DF2F8D87D700EB377C /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D32F8D79D200EB377C /* SampleData.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		A1A1C3B62F8D767C00EB377C /* Consistency Calendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Consistency Calendar.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1A1C3D22F8D799000EB377C /* Goal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goal.swift; sourceTree = "<group>"; };
+		A1A1C3D32F8D79D200EB377C /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		A1A1C3D42F8D79E600EB377C /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		A1A1C3D52F8D7A0300EB377C /* GoalCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalCardView.swift; sourceTree = "<group>"; };
+		A1A1C3D62F8D7A1800EB377C /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		A1A1C3D72F8D7A2D00EB377C /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
+		A1A1C3D82F8D7A3E00EB377C /* StatCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -34,6 +51,10 @@
 			children = (
 				A1A1C3B82F8D767C00EB377C /* Consistency Calendar */,
 				A1A1C3B72F8D767C00EB377C /* Products */,
+				A1A1C3CC2F8D793D00EB377C /* Models */,
+				A1A1C3CE2F8D795500EB377C /* Views */,
+				A1A1C3D02F8D796300EB377C /* ViewModels */,
+				A1A1C3D12F8D798100EB377C /* Components */,
 			);
 			sourceTree = "<group>";
 		};
@@ -43,6 +64,41 @@
 				A1A1C3B62F8D767C00EB377C /* Consistency Calendar.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A1A1C3CC2F8D793D00EB377C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A1A1C3D32F8D79D200EB377C /* SampleData.swift */,
+				A1A1C3D22F8D799000EB377C /* Goal.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A1A1C3CE2F8D795500EB377C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1A1C3D82F8D7A3E00EB377C /* StatCard.swift */,
+				A1A1C3D72F8D7A2D00EB377C /* InsightsView.swift */,
+				A1A1C3D62F8D7A1800EB377C /* CalendarView.swift */,
+				A1A1C3D42F8D79E600EB377C /* TodayView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1A1C3D02F8D796300EB377C /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1A1C3D12F8D798100EB377C /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A1A1C3D52F8D7A0300EB377C /* GoalCardView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +175,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1A1C3DE2F8D87D200EB377C /* Goal.swift in Sources */,
+				A1A1C3DD2F8D87CC00EB377C /* GoalCardView.swift in Sources */,
+				A1A1C3DB2F8D857000EB377C /* InsightsView.swift in Sources */,
+				A1A1C3D92F8D855D00EB377C /* TodayView.swift in Sources */,
+				A1A1C3DC2F8D87AA00EB377C /* StatCard.swift in Sources */,
+				A1A1C3DA2F8D856900EB377C /* CalendarView.swift in Sources */,
+				A1A1C3DF2F8D87D700EB377C /* SampleData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
