@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TodayView: View {
-    @State private var goals = SampleData.goals
+    @Query(sort: \Goal.createdAt) private var goals: [Goal]
 
     var body: some View {
         NavigationStack {
@@ -19,9 +20,26 @@ struct TodayView: View {
                         .fontWeight(.bold)
                         .padding(.horizontal)
 
-                    ForEach($goals) { $goal in
-                        GoalCardView(goal: $goal)
+                    if goals.isEmpty {
+                        Text("No goals yet. Add your first goal soon.")
+                            .foregroundStyle(.secondary)
                             .padding(.horizontal)
+                    } else {
+                        ForEach(goals) { goal in
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(goal.title)
+                                    .font(.headline)
+
+                                Text("\(goal.category) • \(goal.type.rawValue)")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                            .background(.thinMaterial)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .padding(.horizontal)
+                        }
                     }
                 }
                 .padding(.top)
@@ -33,4 +51,5 @@ struct TodayView: View {
 
 #Preview {
     TodayView()
+        .modelContainer(for: [Goal.self, CheckIn.self], inMemory: true)
 }

@@ -6,25 +6,45 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Goal: Identifiable, Hashable {
-    let id: UUID
+@Model
+final class Goal {
     var title: String
     var category: String
+    var type: GoalType
     var createdAt: Date
-    var isCompletedToday: Bool
+    var startDate: Date
+    var reminderEnabled: Bool
+    var reminderHour: Int
+    var reminderMinute: Int
+    var targetValue: Double?
+    var targetLocationName: String?
+    var isArchived: Bool
 
     init(
-        id: UUID = UUID(),
         title: String,
         category: String,
+        type: GoalType,
         createdAt: Date = Date(),
-        isCompletedToday: Bool = false
+        startDate: Date = Date(),
+        reminderEnabled: Bool = false,
+        reminderHour: Int = 9,
+        reminderMinute: Int = 0,
+        targetValue: Double? = nil,
+        targetLocationName: String? = nil,
+        isArchived: Bool = false
     ) {
-        self.id = id
         self.title = title
         self.category = category
+        self.type = type
         self.createdAt = createdAt
-        self.isCompletedToday = isCompletedToday
+        self.startDate = startDate
+        self.reminderEnabled = reminderEnabled
+        self.reminderHour = reminderHour
+        self.reminderMinute = reminderMinute
+        self.targetValue = targetValue
+        self.targetLocationName = targetLocationName
+        self.isArchived = isArchived
     }
 }

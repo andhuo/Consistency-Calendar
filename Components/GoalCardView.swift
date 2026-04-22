@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GoalCardView: View {
-    @Binding var goal: Goal
+    let goal: Goal
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -17,28 +17,21 @@ struct GoalCardView: View {
                     Text(goal.title)
                         .font(.headline)
 
-                    Text(goal.category)
+                    Text("\(goal.category) • \(goal.type.rawValue)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
 
                 Spacer()
 
-                Image(systemName: goal.isCompletedToday ? "checkmark.circle.fill" : "circle")
+                Image(systemName: "circle")
                     .font(.title2)
-                    .foregroundStyle(goal.isCompletedToday ? .green : .gray)
+                    .foregroundStyle(.gray)
             }
 
-            Button {
-                goal.isCompletedToday.toggle()
-            } label: {
-                Text(goal.isCompletedToday ? "Completed Today" : "Mark Complete")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(goal.isCompletedToday ? Color.green.opacity(0.15) : Color.blue.opacity(0.15))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-            }
-            .buttonStyle(.plain)
+            Text("Check-ins and completion state will connect here next.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
         }
         .padding()
         .background(.thinMaterial)
@@ -47,6 +40,6 @@ struct GoalCardView: View {
 }
 
 #Preview {
-    GoalCardView(goal: .constant(Goal(title: "Go to the Gym", category: "Fitness")))
+    GoalCardView(goal: Goal(title: "Go to the Gym", category: "Fitness", type: .manual))
         .padding()
 }

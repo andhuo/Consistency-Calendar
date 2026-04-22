@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct Consistency_CalendarApp: App {
@@ -13,5 +14,6 @@ struct Consistency_CalendarApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [Goal.self, CheckIn.self])
     }
 }
