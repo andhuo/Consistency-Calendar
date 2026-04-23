@@ -14,7 +14,7 @@ import Combine
 final class CurrentLocationPicker: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var authorizationStatus: CLAuthorizationStatus?
     @Published var currentCoordinate: CLLocationCoordinate2D?
-    @Published var currentLocationName: String = ""
+    @Published var currentLocationName: String = "Current Location"
 
     private let manager = CLLocationManager()
 
@@ -34,15 +34,17 @@ final class CurrentLocationPicker: NSObject, ObservableObject, CLLocationManager
         case .authorizedWhenInUse, .authorizedAlways:
             manager.requestLocation()
         case .denied, .restricted:
-            break
+            currentLocationName = "Location Access Denied"
         @unknown default:
-            break
+            currentLocationName = "Current Location"
         }
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         authorizationStatus = manager.authorizationStatus
-        if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
+
+        if manager.authorizationStatus == .authorizedWhenInUse ||
+            manager.authorizationStatus == .authorizedAlways {
             manager.requestLocation()
         }
     }
@@ -50,30 +52,7 @@ final class CurrentLocationPicker: NSObject, ObservableObject, CLLocationManager
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
         currentCoordinate = location.coordinate
-
-        Task {
-            let geocoder = CLGeocoder()
-
-            do {
-                let placemarks = try await geocoder.reverseGeocodeLocation(location)
-                if let placemark = placemarks.first {
-                    let parts = [placemark.name, placemark.locality].compactMap { $0 }
-                    let resolved = parts.isEmpty ? "Current Location" : parts.joined(separator: ", ")
-
-                    await MainActor.run {
-                        self.currentLocationName = resolved
-                    }
-                } else {
-                    await MainActor.run {
-                        self.currentLocationName = "Current Location"
-                    }
-                }
-            } catch {
-                await MainActor.run {
-                    self.currentLocationName = "Current Location"
-                }
-            }
-        }
+        currentLocationName = "Current Location"
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -100,6 +79,8 @@ struct AddGoalView: View {
     @State private var searchResults: [MKMapItem] = []
     @State private var selectedMapItem: MKMapItem?
     @State private var mapCameraPosition: MapCameraPosition = .automatic
+    @State private var showingSaveError = false
+    @State private var saveErrorMessage = ""
 
     let templates = GoalTemplates.presets
 
@@ -165,7 +146,7 @@ struct AddGoalView: View {
                                 Text("Current Location")
                                     .font(.headline)
 
-                                Text(currentLocationPicker.currentLocationName.isEmpty ? "Current Location" : currentLocationPicker.currentLocationName)
+                                Text(currentLocationPicker.currentLocationName)
                                     .font(.subheadline)
 
                                 Text("Lat: \(coordinate.latitude), Lon: \(coordinate.longitude)")
@@ -176,7 +157,7 @@ struct AddGoalView: View {
                             Button("Use This Location") {
                                 let placemark = MKPlacemark(coordinate: coordinate)
                                 let mapItem = MKMapItem(placemark: placemark)
-                                mapItem.name = currentLocationPicker.currentLocationName.isEmpty ? "Current Location" : currentLocationPicker.currentLocationName
+                                mapItem.name = currentLocationPicker.currentLocationName
                                 selectMapItem(mapItem)
                             }
                         }
@@ -188,12 +169,6 @@ struct AddGoalView: View {
 
                                 Text(selectedMapItem.name ?? "Unknown Place")
                                     .font(.subheadline)
-
-                                if let title = selectedMapItem.placemark.title {
-                                    Text(title)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
                             }
                         }
 
@@ -209,12 +184,6 @@ struct AddGoalView: View {
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(item.name ?? "Unknown Place")
                                                 .foregroundStyle(.primary)
-
-                                            if let title = item.placemark.title {
-                                                Text(title)
-                                                    .font(.caption)
-                                                    .foregroundStyle(.secondary)
-                                            }
                                         }
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     }
@@ -224,7 +193,10 @@ struct AddGoalView: View {
 
                         Map(position: $mapCameraPosition) {
                             if let selectedMapItem {
-                                Marker(selectedMapItem.name ?? "Selected Location", coordinate: selectedMapItem.placemark.coordinate)
+                                Marker(
+                                    selectedMapItem.name ?? "Selected Location",
+                                    coordinate: selectedMapItem.placemark.coordinate
+                                )
                             }
                         }
                         .frame(height: 220)
@@ -236,8 +208,11 @@ struct AddGoalView: View {
                     Toggle("Enable Reminder", isOn: $reminderEnabled)
 
                     if reminderEnabled {
-                        Stepper("Reminder Hour: \(reminderHour)", value: $reminderHour, in: 0...23)
-                        Stepper("Reminder Minute: \(reminderMinute)", value: $reminderMinute, in: 0...59)
+                        DatePicker(
+                            "Reminder Time",
+                            selection: reminderDateBinding,
+                            displayedComponents: .hourAndMinute
+                        )
                     }
                 }
 
@@ -249,6 +224,12 @@ struct AddGoalView: View {
                 }
             }
             .navigationTitle("Add Goal")
+            .navigationBarTitleDisplayMode(.inline)
+            .alert("Could Not Save Goal", isPresented: $showingSaveError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(saveErrorMessage)
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
@@ -257,6 +238,22 @@ struct AddGoalView: View {
                 }
             }
         }
+    }
+
+    private var reminderDateBinding: Binding<Date> {
+        Binding<Date>(
+            get: {
+                var components = DateComponents()
+                components.hour = reminderHour
+                components.minute = reminderMinute
+                return Calendar.current.date(from: components) ?? Date()
+            },
+            set: { newValue in
+                let components = Calendar.current.dateComponents([.hour, .minute], from: newValue)
+                reminderHour = components.hour ?? 9
+                reminderMinute = components.minute ?? 0
+            }
+        )
     }
 
     private var isSaveDisabled: Bool {
@@ -287,6 +284,7 @@ struct AddGoalView: View {
     private func selectMapItem(_ item: MKMapItem) {
         selectedMapItem = item
         locationSearchText = item.name ?? ""
+
         mapCameraPosition = .region(
             MKCoordinateRegion(
                 center: item.placemark.coordinate,
@@ -329,8 +327,8 @@ struct AddGoalView: View {
         let coordinate = selectedMapItem?.placemark.coordinate
 
         let newGoal = Goal(
-            title: title,
-            category: category,
+            title: title.trimmingCharacters(in: .whitespacesAndNewlines),
+            category: category.trimmingCharacters(in: .whitespacesAndNewlines),
             type: type,
             startDate: startDate,
             reminderEnabled: reminderEnabled,
@@ -343,7 +341,15 @@ struct AddGoalView: View {
         )
 
         modelContext.insert(newGoal)
-        dismiss()
+
+        do {
+            try modelContext.save()
+            print("Saved goal: \(newGoal.title)")
+            dismiss()
+        } catch {
+            saveErrorMessage = error.localizedDescription
+            showingSaveError = true
+        }
     }
 }
 

@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct TodayView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \Goal.createdAt) private var goals: [Goal]
     @State private var showingAddGoal = false
 
@@ -51,6 +52,7 @@ struct TodayView: View {
             }
             .sheet(isPresented: $showingAddGoal) {
                 AddGoalView()
+                    .environment(\.modelContext, modelContext)
             }
         }
     }
