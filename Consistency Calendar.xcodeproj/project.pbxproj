@@ -11,6 +11,9 @@
 		A14600E22F995EA200ED31F5 /* CheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14600E12F995E9D00ED31F5 /* CheckIn.swift */; };
 		A14600E42F996A9500ED31F5 /* GoalTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14600E32F996A9200ED31F5 /* GoalTemplate.swift */; };
 		A14600E62F996AB300ED31F5 /* AddGoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14600E52F996AAE00ED31F5 /* AddGoalView.swift */; };
+		A167F73D2F9A893700A00FD5 /* CalendarZoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A167F73C2F9A893300A00FD5 /* CalendarZoom.swift */; };
+		A167F73F2F9A896B00A00FD5 /* DayCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A167F73E2F9A896700A00FD5 /* DayCellView.swift */; };
+		A167F7412F9A897C00A00FD5 /* DayDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A167F7402F9A897800A00FD5 /* DayDetailView.swift */; };
 		A1A1C3D92F8D855D00EB377C /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D42F8D79E600EB377C /* TodayView.swift */; };
 		A1A1C3DA2F8D856900EB377C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D62F8D7A1800EB377C /* CalendarView.swift */; };
 		A1A1C3DB2F8D857000EB377C /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1C3D72F8D7A2D00EB377C /* InsightsView.swift */; };
@@ -24,6 +27,10 @@
 		A14600E12F995E9D00ED31F5 /* CheckIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckIn.swift; sourceTree = "<group>"; };
 		A14600E32F996A9200ED31F5 /* GoalTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalTemplate.swift; sourceTree = "<group>"; };
 		A14600E52F996AAE00ED31F5 /* AddGoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGoalView.swift; sourceTree = "<group>"; };
+		A14600E92F9A879000ED31F5 /* Untitled.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Untitled.swift; sourceTree = "<group>"; };
+		A167F73C2F9A893300A00FD5 /* CalendarZoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarZoom.swift; sourceTree = "<group>"; };
+		A167F73E2F9A896700A00FD5 /* DayCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCellView.swift; sourceTree = "<group>"; };
+		A167F7402F9A897800A00FD5 /* DayDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayDetailView.swift; sourceTree = "<group>"; };
 		A1A1C3B62F8D767C00EB377C /* Consistency Calendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Consistency Calendar.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1A1C3D22F8D799000EB377C /* Goal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goal.swift; sourceTree = "<group>"; };
 		A1A1C3D42F8D79E600EB377C /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
@@ -75,6 +82,7 @@
 		A1A1C3CC2F8D793D00EB377C /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A167F73C2F9A893300A00FD5 /* CalendarZoom.swift */,
 				A14600E32F996A9200ED31F5 /* GoalTemplate.swift */,
 				A14600E12F995E9D00ED31F5 /* CheckIn.swift */,
 				A14600DF2F995E7500ED31F5 /* GoalType.swift */,
@@ -86,6 +94,8 @@
 		A1A1C3CE2F8D795500EB377C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A167F73E2F9A896700A00FD5 /* DayCellView.swift */,
+				A167F7402F9A897800A00FD5 /* DayDetailView.swift */,
 				A14600E52F996AAE00ED31F5 /* AddGoalView.swift */,
 				A1A1C3D82F8D7A3E00EB377C /* StatCard.swift */,
 				A1A1C3D72F8D7A2D00EB377C /* InsightsView.swift */,
@@ -98,6 +108,7 @@
 		A1A1C3D02F8D796300EB377C /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				A14600E92F9A879000ED31F5 /* Untitled.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -185,11 +196,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1A1C3DE2F8D87D200EB377C /* Goal.swift in Sources */,
+				A167F73F2F9A896B00A00FD5 /* DayCellView.swift in Sources */,
 				A1A1C3DD2F8D87CC00EB377C /* GoalCardView.swift in Sources */,
 				A14600E42F996A9500ED31F5 /* GoalTemplate.swift in Sources */,
+				A167F7412F9A897C00A00FD5 /* DayDetailView.swift in Sources */,
 				A14600E62F996AB300ED31F5 /* AddGoalView.swift in Sources */,
 				A1A1C3DB2F8D857000EB377C /* InsightsView.swift in Sources */,
 				A1A1C3D92F8D855D00EB377C /* TodayView.swift in Sources */,
+				A167F73D2F9A893700A00FD5 /* CalendarZoom.swift in Sources */,
 				A1A1C3DC2F8D87AA00EB377C /* StatCard.swift in Sources */,
 				A1A1C3DA2F8D856900EB377C /* CalendarView.swift in Sources */,
 				A14600E02F995E7800ED31F5 /* GoalType.swift in Sources */,
