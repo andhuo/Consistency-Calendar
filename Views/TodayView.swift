@@ -10,6 +10,7 @@ import SwiftData
 
 struct TodayView: View {
     @Query(sort: \Goal.createdAt) private var goals: [Goal]
+    @State private var showingAddGoal = false
 
     var body: some View {
         NavigationStack {
@@ -21,30 +22,36 @@ struct TodayView: View {
                         .padding(.horizontal)
 
                     if goals.isEmpty {
-                        Text("No goals yet. Add your first goal soon.")
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal)
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("No goals yet.")
+                                .font(.headline)
+
+                            Text("Tap the + button to add a custom goal or start from a preset like 75 Hard, a gym streak, or a daily step goal.")
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal)
                     } else {
                         ForEach(goals) { goal in
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(goal.title)
-                                    .font(.headline)
-
-                                Text("\(goal.category) • \(goal.type.rawValue)")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                            .background(.thinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .padding(.horizontal)
+                            GoalCardView(goal: goal)
+                                .padding(.horizontal)
                         }
                     }
                 }
                 .padding(.top)
             }
             .navigationTitle("Consistency Calendar")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showingAddGoal = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingAddGoal) {
+                AddGoalView()
+            }
         }
     }
 }

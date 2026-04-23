@@ -20,6 +20,8 @@ final class Goal {
     var reminderMinute: Int
     var targetValue: Double?
     var targetLocationName: String?
+    var targetLatitude: Double?
+    var targetLongitude: Double?
     var isArchived: Bool
 
     init(
@@ -33,6 +35,8 @@ final class Goal {
         reminderMinute: Int = 0,
         targetValue: Double? = nil,
         targetLocationName: String? = nil,
+        targetLatitude: Double? = nil,
+        targetLongitude: Double? = nil,
         isArchived: Bool = false
     ) {
         self.title = title
@@ -45,6 +49,8 @@ final class Goal {
         self.reminderMinute = reminderMinute
         self.targetValue = targetValue
         self.targetLocationName = targetLocationName
+        self.targetLatitude = targetLatitude
+        self.targetLongitude = targetLongitude
         self.isArchived = isArchived
     }
 }
