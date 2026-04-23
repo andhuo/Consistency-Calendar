@@ -8,10 +8,84 @@
 import SwiftUI
 import SwiftData
 import MapKit
+import CoreLocation
+import Combine
+
+final class CurrentLocationPicker: NSObject, ObservableObject, CLLocationManagerDelegate {
+    @Published var authorizationStatus: CLAuthorizationStatus?
+    @Published var currentCoordinate: CLLocationCoordinate2D?
+    @Published var currentLocationName: String = ""
+
+    private let manager = CLLocationManager()
+
+    override init() {
+        super.init()
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+    }
+
+    func requestLocation() {
+        let status = manager.authorizationStatus
+        authorizationStatus = status
+
+        switch status {
+        case .notDetermined:
+            manager.requestWhenInUseAuthorization()
+        case .authorizedWhenInUse, .authorizedAlways:
+            manager.requestLocation()
+        case .denied, .restricted:
+            break
+        @unknown default:
+            break
+        }
+    }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        authorizationStatus = manager.authorizationStatus
+        if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
+            manager.requestLocation()
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else { return }
+        currentCoordinate = location.coordinate
+
+        Task {
+            let geocoder = CLGeocoder()
+
+            do {
+                let placemarks = try await geocoder.reverseGeocodeLocation(location)
+                if let placemark = placemarks.first {
+                    let parts = [placemark.name, placemark.locality].compactMap { $0 }
+                    let resolved = parts.isEmpty ? "Current Location" : parts.joined(separator: ", ")
+
+                    await MainActor.run {
+                        self.currentLocationName = resolved
+                    }
+                } else {
+                    await MainActor.run {
+                        self.currentLocationName = "Current Location"
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    self.currentLocationName = "Current Location"
+                }
+            }
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        currentLocationName = "Current Location"
+    }
+}
 
 struct AddGoalView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+
+    @StateObject private var currentLocationPicker = CurrentLocationPicker()
 
     @State private var title = ""
     @State private var category = ""
@@ -81,6 +155,31 @@ struct AddGoalView: View {
                             }
                         }
                         .disabled(locationSearchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+                        Button("Use My Current Location") {
+                            currentLocationPicker.requestLocation()
+                        }
+
+                        if let coordinate = currentLocationPicker.currentCoordinate {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Current Location")
+                                    .font(.headline)
+
+                                Text(currentLocationPicker.currentLocationName.isEmpty ? "Current Location" : currentLocationPicker.currentLocationName)
+                                    .font(.subheadline)
+
+                                Text("Lat: \(coordinate.latitude), Lon: \(coordinate.longitude)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            Button("Use This Location") {
+                                let placemark = MKPlacemark(coordinate: coordinate)
+                                let mapItem = MKMapItem(placemark: placemark)
+                                mapItem.name = currentLocationPicker.currentLocationName.isEmpty ? "Current Location" : currentLocationPicker.currentLocationName
+                                selectMapItem(mapItem)
+                            }
+                        }
 
                         if let selectedMapItem {
                             VStack(alignment: .leading, spacing: 6) {
@@ -207,6 +306,8 @@ struct AddGoalView: View {
             let response = try await MKLocalSearch(request: request).start()
             await MainActor.run {
                 searchResults = Array(response.mapItems.prefix(5))
+                selectedMapItem = nil
+
                 if let firstResult = searchResults.first {
                     mapCameraPosition = .region(
                         MKCoordinateRegion(
